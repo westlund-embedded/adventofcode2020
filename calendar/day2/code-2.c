@@ -56,12 +56,10 @@ check_limit_exact(limits_t *lim, char ch, char *st)
   int high = 0;
 
   if(st[lim->low - 1] == ch) {
-    printf("low: %c, ch: %c\n", st[lim->low-1], ch);
     low = 1;
   }
 
   if(st[lim->high - 1] == ch) {
-    printf("high: %c, ch: %c\n", st[lim->high-1], ch);
     high = 1;
   }
 
