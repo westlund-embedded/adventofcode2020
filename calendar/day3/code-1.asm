@@ -1,18 +1,44 @@
+bits        64
 section     .data
-msg db      "Testing testing",0xa,0
-
+    input   db      "input.txt",0
+    
+section     .bss
+    text    resb    12000           ; file text
 
 section     .text
 global      _start
 
 _start:                             ; Entry point
-    push    rax
-    mov     rax, msg                ; put msg as argument to print
-    call    print                   ; call sub routine
-    pop     rax
+    call    read                    ; read file
+
+    
+
+    mov     rax, text
+    call    print
+
     call    exit                    ; Exit
     
-print: 
+read:                               ; read input file to RAM
+    mov     rax, 2                  ; sys_open
+    mov     rdi, input              ; filename
+    mov     rsi, 0                  ; O_RDONLY
+    mov     rdx, 0                  ; no file permission
+    syscall
+
+    push    rax                     ; put fd on stack
+    mov     rdi, rax                ; use fd for read
+    mov     rax, 0                  ; sys_read
+    mov     rsi, text               ; read to RAM
+    mov     rdx, 12000              ; read 10 bytes
+    syscall
+
+    mov     rax, 3                  ; sys_close
+    pop     rdi                     ; pop fd
+    syscall
+
+    ret
+
+print:                              ; msg in rax
     call    strlen                  ; get strlen -> edx
     mov     rsi, rax                ; put msg in source reg
     mov     rax, 1                  ; sys_write
